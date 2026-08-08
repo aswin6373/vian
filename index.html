@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    // Run before anything paints: stop the browser from restoring a
+    // previous scroll position on refresh. Without this, reloading the
+    // page while scrolled down opens the (95%-opaque) entrance screen
+    // mid-page instead of at the top, letting whatever section you were
+    // on ghost through behind it.
+    if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
+    window.scrollTo(0, 0);
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Vishnu & Anitha | Wedding Invitation</title>
+  <meta name="description" content="Join us as Vishnu & Anitha begin their new journey together — September 13, 2026, Chamravattam & Kavilakkad, Kerala.">
+  <meta name="theme-color" content="#0F0406">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Vishnu & Anitha | Wedding Invitation">
+  <meta property="og:description" content="September 13, 2026 · Chamravattam & Kavilakkad, Kerala">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vishnu-weds-anitha.netlify.app/">
+  <meta property="og:image" content="https://vishnu-weds-anitha.netlify.app/assets/images/og-cover.jpg">
+  <meta property="og:image:secure_url" content="https://vishnu-weds-anitha.netlify.app/assets/images/og-cover.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Vishnu & Anitha — Wedding Invitation, September 13, 2026">
+  <meta property="og:site_name" content="Vishnu & Anitha Wedding">
+
+  <!-- Twitter Card (WhatsApp/iMessage/Telegram also read these as a fallback) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vishnu & Anitha | Wedding Invitation">
+  <meta name="twitter:description" content="September 13, 2026 · Chamravattam & Kavilakkad, Kerala">
+  <meta name="twitter:image" content="https://vishnu-weds-anitha.netlify.app/assets/images/og-cover.jpg">
+
+  <!-- Favicon (gold ring emoji, no external file needed) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%8D%3C/text%3E%3C/svg%3E">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Great+Vibes&family=Noto+Sans+Malayalam:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- AOS Animations -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --maroon: #4A0E17;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden; /* permanent, not just while the entrance screen is up —
+        fixed-position elements (music player) aren't clipped by body's own
+        overflow-x:hidden, so this has to live on <html> to fully block any
+        sideways drift, including right after the entrance screen closes */
+      width: 100%;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0F0406;
+      color: #F8F5F0;
+      overflow-x: hidden;
+    }
+
+    .font-serif-title { font-family: 'Cinzel', serif; }
+    .font-script { font-family: 'Great Vibes', cursive; }
+    .font-malayalam { font-family: 'Noto Sans Malayalam', sans-serif; }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #FFE5A3 0%, #D4AF37 50%, #AA7C11 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .glass-card {
+      background: rgba(35, 10, 16, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero-bg {
+      background: linear-gradient(180deg, rgba(15, 4, 6, 0.5) 0%, rgba(15, 4, 6, 0.95) 100%),
+                  url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    /* iOS Safari doesn't render background-attachment:fixed well — fall back to scroll on touch devices */
+    @media (hover: none) and (pointer: coarse) {
+      .hero-bg { background-attachment: scroll; }
+    }
+
+    /* Floating Petals Effect */
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+    .petal {
+      position: absolute;
+      background: linear-gradient(135deg, #d4af37, #8a1424);
+      border-radius: 150% 0 150% 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Visible keyboard focus for accessibility */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* Respect reduced-motion preference */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: 0;
+      background: var(--gold);
+      color: black;
+      padding: 0.75rem 1.25rem;
+      z-index: 200;
+      border-radius: 0 0 0.5rem 0;
+      font-weight: 700;
+    }
+    .skip-link:focus {
+      left: max(0px, env(safe-area-inset-left));
+      top: max(0px, env(safe-area-inset-top));
+    }
+
+    /* Applied while the entrance screen is up: blocks background scroll so
+       the page underneath can't be scrolled around behind the overlay */
+    html.no-scroll, html.no-scroll body {
+      overflow-y: hidden;
+      height: 100%;
+    }
+
+    /* Keep the fixed music player clear of notches / the iPhone Dynamic
+       Island / punch-hole cameras on every device, not just plain rectangles */
+    #musicPlayer {
+      top: calc(0.75rem + env(safe-area-inset-top, 0px));
+      right: calc(0.75rem + env(safe-area-inset-right, 0px));
+    }
+    @media (min-width: 640px) {
+      #musicPlayer {
+        top: calc(1rem + env(safe-area-inset-top, 0px));
+        right: calc(1rem + env(safe-area-inset-right, 0px));
+      }
+    }
+
+    /* Short/landscape phone screens (e.g. rotated iPhone/Android in a
+       browser chrome bar): the hero was forcing a full 100dvh block with
+       full padding, which pushed the countdown+scroll-indicator off-screen
+       and made the entrance card feel cramped. Compact everything instead
+       of letting it fight for vertical space. */
+    @media (max-height: 560px) and (orientation: landscape) {
+      .hero-bg {
+        min-height: 100dvh;
+        padding-top: 3.25rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+      .hero-bg h1 { font-size: 2.25rem !important; line-height: 1.1 !important; }
+      .hero-bg #countdown { gap: 0.375rem !important; }
+      .hero-bg .absolute.bottom-6 { display: none; } /* scroll chevron */
+      #petal-container { display: none; } /* decorative only, saves space+jank */
+      #welcomeModal .mac-glass-card { padding: 1rem !important; }
+      #welcomeModal h2 { font-size: 1.5rem !important; }
+    }
+
+    /* Entrance "Open Invitation" screen — the couple photo lives inside a
+       bounded portrait panel so it never over-zooms on wide desktop
+       monitors; the rest of the viewport (on very wide screens only)
+       shows the site's normal dark background instead of a stretched photo. */
+    #welcomeModal {
+      background-color: #0F0406;
+    }
+
+    .entrance-photo-panel {
+      background: linear-gradient(180deg, rgba(15, 4, 6, 0.05) 0%, rgba(15, 4, 6, 0.15) 45%, rgba(15, 4, 6, 0.55) 100%),
+                  url('assets/images/entrance-bg.jpg');
+      background-size: cover;
+      background-position: top center;
+      padding-top: max(1rem, env(safe-area-inset-top));
+      padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+    @media (min-width: 640px) {
+      .entrance-photo-panel { max-width: 30rem; box-shadow: 0 0 80px rgba(0, 0, 0, 0.5); }
+    }
+
+    /* macOS-style frosted glass card for the entrance screen — much more
+       translucent than .glass-card so the couple photo reads clearly through it */
+    .mac-glass-card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Let the hero title breathe a little more on large desktop monitors
+       instead of capping out at the tablet size */
+    @media (min-width: 1024px) {
+      .hero-bg h1 { font-size: 5rem; }
+    }
+    @media (min-width: 1536px) {
+      .hero-bg h1 { font-size: 5.5rem; }
+    }
+  </style>
+</head>
+<body class="selection:bg-yellow-600 selection:text-white">
+
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <!-- Instant Music Entrance Screen Overlay -->
+  <div id="welcomeModal" class="fixed inset-0 z-[100] flex justify-center transition-opacity duration-700">
+    <div class="entrance-photo-panel relative w-full flex flex-col items-center justify-end text-center p-4 sm:p-6">
+    <div class="mac-glass-card p-6 sm:p-8 md:p-10 rounded-3xl w-full max-w-xs sm:max-w-sm md:max-w-md shadow-2xl relative">
+      <div class="mb-3">
+        <span class="text-4xl text-yellow-400 font-bold font-malayalam">ശ്രീ</span>
+      </div>
+      <p class="text-xs text-yellow-200 uppercase tracking-widest mb-1">Wedding Invitation</p>
+      <h2 class="text-3xl font-serif-title gold-gradient-text">Vishnu & Anitha</h2>
+      <p class="text-sm font-malayalam text-gray-300 mt-2 mb-6">2026 സെപ്തംബർ 13</p>
+
+      <button id="enterSiteBtn" type="button" class="w-full py-4 rounded-full bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-sm tracking-wider uppercase hover:scale-105 transition shadow-2xl flex items-center justify-center gap-2 animate-pulse">
+        <span>Open Invitation</span> <i class="fas fa-envelope-open" aria-hidden="true"></i>
+      </button>
+    </div>
+    </div>
+  </div>
+
+  <!-- Interactive Music Player Bar -->
+  <div id="musicPlayer" class="fixed top-3 right-3 sm:top-4 sm:right-4 z-50 flex items-center gap-1.5 sm:gap-2 max-w-[calc(100vw-1.5rem)]">
+    <!-- Song Title Info (song name hidden on the smallest phones so the bar never overflows) -->
+    <div id="songInfo" class="glass-card text-yellow-300 text-[11px] sm:text-xs px-2.5 sm:px-3 py-2 rounded-full hidden sm:flex items-center gap-2 max-w-[200px] border border-yellow-500/40">
+      <i id="discIcon" class="fas fa-compact-disc text-yellow-400 shrink-0" aria-hidden="true"></i>
+      <span id="songTitleDisplay" class="truncate">Wedding Music</span>
+    </div>
+
+    <!-- Play/Pause Button -->
+    <button id="musicToggle" type="button" aria-label="Play or pause music" class="glass-card text-yellow-400 p-3 sm:p-3.5 rounded-full hover:scale-110 transition duration-300 shadow-xl border border-yellow-500/50 shrink-0">
+      <i id="musicIcon" class="fas fa-play text-base sm:text-lg" aria-hidden="true"></i>
+    </button>
+
+    <!-- Next Track Button -->
+    <button id="nextSongBtn" type="button" title="Next Song" aria-label="Play next song" class="glass-card text-yellow-400 p-3 sm:p-3.5 rounded-full hover:scale-110 transition duration-300 shadow-xl border border-yellow-500/50 shrink-0">
+      <i class="fas fa-step-forward text-xs sm:text-sm" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <!-- Audio Element -->
+  <audio id="bgMusic" preload="none"></audio>
+
+  <main id="main-content">
+
+  <!-- Hero Section -->
+  <section class="min-h-[100dvh] hero-bg flex flex-col justify-center items-center text-center relative px-3 sm:px-4 py-16 sm:py-20">
+    <div id="petal-container" class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true"></div>
+
+    <div data-aos="fade-down" data-aos-duration="1200" class="mb-4">
+      <span class="text-4xl text-yellow-400 font-bold tracking-widest font-malayalam">ശ്രീ</span>
+    </div>
+
+    <div data-aos="zoom-in" data-aos-duration="1500" class="max-w-3xl mx-auto">
+      <p class="text-yellow-200/80 tracking-[0.3em] uppercase text-xs md:text-sm mb-3">Save Our Date</p>
+
+      <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold font-serif-title tracking-wide mb-2 gold-gradient-text break-words">
+        VISHNU <span class="text-2xl sm:text-3xl md:text-5xl font-script text-red-400">&amp;</span> ANITHA
+      </h1>
+
+      <p class="font-malayalam text-lg md:text-xl text-yellow-100/90 mt-2 font-light">
+        വിവാഹിതരാവുകയാണ്
+      </p>
+
+      <div class="w-32 h-[1px] bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto my-6"></div>
+
+      <!-- Date Banner -->
+      <div class="inline-block glass-card px-5 sm:px-8 py-3 sm:py-4 rounded-2xl mb-8 max-w-full">
+        <p class="text-xl sm:text-2xl md:text-3xl font-bold font-serif-title text-yellow-300">SEPTEMBER 13, 2026</p>
+        <p class="text-sm font-malayalam text-yellow-100/70 mt-1">ഞായറാഴ്ച | 1201 ചിങ്ങം 28</p>
+      </div>
+
+      <!-- Countdown -->
+      <div id="countdown" class="grid grid-cols-4 gap-2 sm:gap-3 md:gap-6 max-w-lg mx-auto" role="timer" aria-live="off" aria-label="Countdown to the wedding">
+        <div class="glass-card p-2 sm:p-3 rounded-xl border border-yellow-500/20">
+          <span id="days" class="text-xl sm:text-2xl md:text-4xl font-bold text-yellow-400">00</span>
+          <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mt-1">Days</p>
+        </div>
+        <div class="glass-card p-2 sm:p-3 rounded-xl border border-yellow-500/20">
+          <span id="hours" class="text-xl sm:text-2xl md:text-4xl font-bold text-yellow-400">00</span>
+          <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mt-1">Hours</p>
+        </div>
+        <div class="glass-card p-2 sm:p-3 rounded-xl border border-yellow-500/20">
+          <span id="minutes" class="text-xl sm:text-2xl md:text-4xl font-bold text-yellow-400">00</span>
+          <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mt-1">Mins</p>
+        </div>
+        <div class="glass-card p-2 sm:p-3 rounded-xl border border-yellow-500/20">
+          <span id="seconds" class="text-xl sm:text-2xl md:text-4xl font-bold text-yellow-400">00</span>
+          <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-400 uppercase tracking-wider mt-1">Secs</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-yellow-400/60 animate-bounce" aria-hidden="true">
+      <i class="fas fa-chevron-down text-xl"></i>
+    </div>
+  </section>
+
+  <!-- Couple & Family Details -->
+  <section class="py-14 sm:py-20 px-4 max-w-5xl mx-auto" aria-labelledby="couple-heading">
+    <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+      <h2 id="couple-heading" class="text-3xl md:text-4xl font-serif-title gold-gradient-text mb-2">The Happy Couple</h2>
+      <div class="w-16 h-[2px] bg-yellow-500 mx-auto"></div>
+    </div>
+
+    <!-- Couple Photo Banner (swap assets/images/couple-photo.jpg for your real photo — same filename, any time) -->
+    <div class="relative rounded-3xl overflow-hidden mb-8 sm:mb-12 border border-yellow-500/30 shadow-2xl" data-aos="zoom-in">
+      <img
+        src="assets/images/couple-photo.jpg"
+        alt="Vishnu and Anitha smiling together"
+        class="w-full h-64 sm:h-80 md:h-[28rem] object-cover"
+        loading="lazy" decoding="async" width="761" height="460">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/15 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-5 sm:p-8 text-center">
+        <p class="font-script text-4xl sm:text-5xl md:text-6xl gold-gradient-text">Vishnu &amp; Anitha</p>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5 sm:gap-8 md:gap-12">
+      <!-- Groom -->
+      <div class="glass-card p-6 sm:p-8 rounded-3xl text-center relative overflow-hidden" data-aos="fade-right">
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-600 to-yellow-300"></div>
+        <h3 class="text-2xl font-bold font-serif-title text-yellow-300 mt-3">Vishnu</h3>
+        <p class="text-xs text-yellow-100/60 font-malayalam mt-1">ഞങ്ങളുടെ മകൻ</p>
+
+        <div class="mt-6 pt-6 border-t border-yellow-500/20 font-malayalam text-sm text-gray-300 space-y-1">
+          <p class="font-semibold text-yellow-200">കൃഷ്ണൻകുട്ടി &amp; പുഷ്പ</p>
+          <p class="text-gray-400">കോടൂർ ഹൗസ്, കാവിലക്കാട്</p>
+        </div>
+      </div>
+
+      <!-- Bride -->
+      <div class="glass-card p-6 sm:p-8 rounded-3xl text-center relative overflow-hidden" data-aos="fade-left">
+        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-300 to-yellow-600"></div>
+        <h3 class="text-2xl font-bold font-serif-title text-yellow-300 mt-3">Anitha</h3>
+        <p class="text-xs text-yellow-100/60 font-malayalam mt-1">വധു</p>
+
+        <div class="mt-6 pt-6 border-t border-yellow-500/20 font-malayalam text-sm text-gray-300 space-y-1">
+          <p class="font-semibold text-yellow-200">D/o മണി &amp; മിനി</p>
+          <p class="text-gray-400">പെരുംപറമ്പിൽ ഹൗസ്, ചമ്രവട്ടം</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Venue & Directions Section -->
+  <section class="py-14 sm:py-20 px-4 bg-black/40 relative" aria-labelledby="venue-heading">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
+        <p class="text-yellow-400 text-sm tracking-widest uppercase mb-1">Navigation &amp; Timings</p>
+        <h2 id="venue-heading" class="text-3xl md:text-5xl font-serif-title gold-gradient-text">Wedding Locations</h2>
+        <div class="w-20 h-[2px] bg-yellow-500 mx-auto mt-3"></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 sm:gap-8">
+
+        <!-- Venue 1: Thalikettu -->
+        <div class="glass-card p-6 sm:p-8 rounded-3xl flex flex-col justify-between hover:border-yellow-500/60 transition" data-aos="zoom-in-up">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-500/30 font-malayalam">താലികെട്ട്</span>
+              <i class="fas fa-ring text-2xl text-yellow-400" aria-hidden="true"></i>
+            </div>
+
+            <h3 class="text-2xl font-bold font-serif-title text-white">Marriage Ceremony</h3>
+            <p class="font-malayalam text-yellow-200 text-sm mt-2"><i class="far fa-clock mr-2" aria-hidden="true"></i>രാവിലെ 10:00 നും 10:30 നും മധ്യേ</p>
+
+            <div class="my-6 p-4 rounded-2xl bg-black/40 border border-yellow-500/20">
+              <p class="font-semibold text-yellow-300 font-malayalam"><i class="fas fa-map-marker-alt text-red-500 mr-2" aria-hidden="true"></i>വധുഗൃഹം (Bride's House)</p>
+              <p class="text-sm text-gray-300 font-malayalam mt-1">പെരുംപറമ്പിൽ ഹൗസ്, ചമ്രവട്ടം</p>
+              <p class="text-xs text-gray-400 mt-1">Perumparambil House, Chamravattam, Kerala</p>
+            </div>
+          </div>
+
+          <a href="https://www.google.com/maps/search/?api=1&query=Chamravattam+Malappuram+Kerala" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
+            <i class="fas fa-location-arrow" aria-hidden="true"></i> Open Directions in Google Maps
+          </a>
+        </div>
+
+        <!-- Venue 2: Evening Reception -->
+        <div class="glass-card p-6 sm:p-8 rounded-3xl flex flex-col justify-between hover:border-yellow-500/60 transition" data-aos="zoom-in-up" data-aos-delay="200">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="text-xs font-semibold px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-500/30 font-malayalam">സൗഹൃദ സൽക്കാരം</span>
+              <i class="fas fa-glass-cheers text-2xl text-yellow-400" aria-hidden="true"></i>
+            </div>
+
+            <h3 class="text-2xl font-bold font-serif-title text-white">Evening Reception</h3>
+            <p class="font-malayalam text-yellow-200 text-sm mt-2"><i class="far fa-clock mr-2" aria-hidden="true"></i>വൈകുന്നേരം 4:00 മുതൽ 9:00 വരെ</p>
+
+            <div class="my-6 p-4 rounded-2xl bg-black/40 border border-yellow-500/20">
+              <p class="font-semibold text-yellow-300 font-malayalam"><i class="fas fa-home text-red-500 mr-2" aria-hidden="true"></i>ഞങ്ങളുടെ വീട്ടിൽവച്ചു (Groom's House)</p>
+              <p class="text-sm text-gray-300 font-malayalam mt-1">കോടൂർ ഹൗസ്, കാവിലക്കാട്</p>
+              <p class="text-xs text-gray-400 mt-1">Kodur House, Kavilakkad, Kerala</p>
+            </div>
+          </div>
+
+          <a href="https://www.google.com/maps/search/?api=1&query=Kavilakkad+Kerala" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
+            <i class="fas fa-location-arrow" aria-hidden="true"></i> Open Directions in Google Maps
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive RSVP & Blessings Section -->
+  <section class="py-14 sm:py-20 px-4 max-w-3xl mx-auto text-center" data-aos="fade-up" aria-labelledby="rsvp-heading">
+    <div class="glass-card p-6 sm:p-8 md:p-12 rounded-3xl border border-yellow-500/30">
+      <i class="fas fa-envelope-open-text text-4xl text-yellow-400 mb-4" aria-hidden="true"></i>
+      <h2 id="rsvp-heading" class="text-3xl font-serif-title gold-gradient-text mb-2">Send Your Blessings</h2>
+      <p class="font-malayalam text-gray-300 text-sm mb-6">ഈ മംഗളമുഹൂർത്തം ധന്യമാക്കാൻ താങ്കളെ കുടുംബസമേതം ക്ഷണിച്ചുകൊള്ളുന്നു.</p>
+
+      <form id="rsvpForm" class="space-y-4 max-w-md mx-auto">
+        <label for="guestName" class="sr-only">Your name</label>
+        <input type="text" id="guestName" name="guestName" placeholder="Your Name" required class="w-full px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400">
+
+        <label for="guestMessage" class="sr-only">Your wishes / blessings</label>
+        <textarea id="guestMessage" name="guestMessage" rows="3" placeholder="Write your wishes/blessings..." class="w-full px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400"></textarea>
+
+        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-base hover:opacity-90 transition shadow-xl flex items-center justify-center gap-2">
+          <span>Send Wishes via WhatsApp</span> <i class="fab fa-whatsapp text-xl" aria-hidden="true"></i>
+        </button>
+      </form>
+
+      <!-- Contact Info -->
+      <div class="mt-10 pt-6 border-t border-yellow-500/20">
+        <p class="text-xs text-gray-400 uppercase tracking-widest mb-3">Contact For Enquiries</p>
+        <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold text-yellow-300">
+          <a href="tel:+919061150956" class="hover:underline flex items-center gap-1"><i class="fas fa-phone-alt" aria-hidden="true"></i> 90611 50956</a>
+          <span aria-hidden="true">•</span>
+          <a href="tel:+917356953287" class="hover:underline flex items-center gap-1"><i class="fas fa-phone-alt" aria-hidden="true"></i> 73569 53287</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-8 text-center text-xs text-gray-500 border-t border-white/5 font-malayalam">
+    <p>സ്നേഹപൂർവ്വം: കുടുംബാംഗങ്ങൾ</p>
+    <p class="mt-2 text-[10px] text-gray-600 font-sans">Crafted with ❤️ for Vishnu &amp; Anitha</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    // ---------------------------------------------------------------
+    // Init AOS (scroll animations) — guarded, because if unpkg.com is
+    // slow/blocked (ad-blocker, flaky network, CDN hiccup), AOS never
+    // gets defined, and calling AOS.init() unguarded would throw and
+    // silently kill the rest of this script — countdown, music player,
+    // and RSVP included. The site should degrade gracefully: no fade-in
+    // animations, everything else still works.
+    // ---------------------------------------------------------------
+    if (typeof AOS !== 'undefined') {
+      AOS.init({ duration: 1000, once: true, disable: window.matchMedia('(prefers-reduced-motion: reduce)').matches });
+    } else {
+      console.warn('AOS failed to load (probably blocked or a slow network) — scroll animations are skipped, everything else still works.');
+      // Content uses data-aos attributes for entrance animation only; with no
+      // AOS library, some browsers/AOS-targeted CSS could leave elements at
+      // opacity:0 waiting for a class AOS would have added. Tailwind CDN
+      // doesn't ship AOS's base CSS unless the AOS stylesheet loaded too, so
+      // there's nothing to undo here — but as a safety net, strip the
+      // data-aos attributes so no other script mistakes this for pending init.
+      document.querySelectorAll('[data-aos]').forEach(function (el) { el.removeAttribute('data-aos'); });
+    }
+
+    // ---------------------------------------------------------------
+    // Countdown Timer (Sept 13, 2026, 10:00 IST)
+    // ---------------------------------------------------------------
+    const weddingDate = new Date("2026-09-13T10:00:00+05:30").getTime();
+    const countdownEl = document.getElementById("countdown");
+
+    const countdownTimer = setInterval(() => {
+      const now = Date.now();
+      const difference = weddingDate - now;
+
+      if (difference <= 0) {
+        clearInterval(countdownTimer);
+        if (countdownEl) {
+          countdownEl.innerHTML = '<p class="col-span-4 text-xl md:text-2xl font-serif-title text-yellow-300">They are married! 🎉</p>';
+        }
+        return;
+      }
+
+      document.getElementById("days").innerText = String(Math.floor(difference / (1000 * 60 * 60 * 24))).padStart(2, '0');
+      document.getElementById("hours").innerText = String(Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+      document.getElementById("minutes").innerText = String(Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+      document.getElementById("seconds").innerText = String(Math.floor((difference % (1000 * 60)) / 1000)).padStart(2, '0');
+    }, 1000);
+
+    // ---------------------------------------------------------------
+    // Falling Petals (ambient decoration)
+    // ---------------------------------------------------------------
+    function spawnPetals() {
+      const container = document.getElementById('petal-container');
+      if (!container || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const PETAL_COUNT = 18;
+      for (let i = 0; i < PETAL_COUNT; i++) {
+        const petal = document.createElement('div');
+        const size = 6 + Math.random() * 10;
+        petal.className = 'petal';
+        petal.style.width = `${size}px`;
+        petal.style.height = `${size}px`;
+        petal.style.left = `${Math.random() * 100}%`;
+        petal.style.top = `${-10 - Math.random() * 20}%`;
+        petal.style.animation = `float ${8 + Math.random() * 10}s linear ${Math.random() * 10}s infinite`;
+        container.appendChild(petal);
+      }
+    }
+    spawnPetals();
+
+    // ---------------------------------------------------------------
+    // Confetti burst
+    // ---------------------------------------------------------------
+    function triggerConfetti() {
+      if (typeof confetti !== 'function') return;
+      confetti({
+        particleCount: 140,
+        spread: 90,
+        startVelocity: 45,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#FFE5A3', '#8A1424', '#F8F5F0']
+      });
+    }
+
+    /* ==========================================================
+       LOCAL MULTI-SONG SHUFFLE PLAYER
+       ----------------------------------------------------------
+       Song files live in /assets/audio/ next to this HTML file.
+       Add your own mp3s there with these exact filenames (or
+       edit the `playlist` array below to match your filenames).
+       ========================================================== */
+    // Bump this number any time you replace an mp3 file with a new one —
+    // it forces the browser to fetch the fresh file instead of a cached copy
+    // (important for local testing too, not just Netlify).
+    const AUDIO_CACHE_VERSION = 1;
+
+    const playlist = [
+      { title: "🎺 Mangala Melam (Nadaswaram)", src: `assets/audio/song1.mp3?v=${AUDIO_CACHE_VERSION}` },
+      { title: "🪈 Romantic Shehnai & Flute", src: `assets/audio/song2.mp3?v=${AUDIO_CACHE_VERSION}` }
+    ];
+
+    let currentTrackIndex = -1;
+    let isPlaying = false;
+    let failedTracks = 0;
+
+    const audio = document.getElementById('bgMusic');
+    const musicPlayer = document.getElementById('musicPlayer');
+    const musicBtn = document.getElementById('musicToggle');
+    const nextBtn = document.getElementById('nextSongBtn');
+    const musicIcon = document.getElementById('musicIcon');
+    const discIcon = document.getElementById('discIcon');
+    const songTitleDisplay = document.getElementById('songTitleDisplay');
+    const welcomeModal = document.getElementById('welcomeModal');
+    const enterSiteBtn = document.getElementById('enterSiteBtn');
+
+    // Belt-and-braces: also force scroll to top once the DOM is ready, and
+    // lock background scrolling for as long as the entrance screen is up.
+    window.scrollTo(0, 0);
+    if (welcomeModal) document.documentElement.classList.add('no-scroll');
+
+    function setPlayingUI(playing) {
+      isPlaying = playing;
+      musicIcon.classList.toggle('fa-play', !playing);
+      musicIcon.classList.toggle('fa-pause', playing);
+      discIcon.classList.toggle('animate-spin', playing);
+    }
+
+    function getRandomTrackIndex() {
+      if (playlist.length <= 1) return 0;
+      let randomIndex;
+      do {
+        randomIndex = Math.floor(Math.random() * playlist.length);
+      } while (randomIndex === currentTrackIndex);
+      return randomIndex;
+    }
+
+    function playTrack(index) {
+      currentTrackIndex = index;
+      const track = playlist[currentTrackIndex];
+      audio.src = track.src;
+      songTitleDisplay.innerText = track.title;
+
+      audio.play().then(() => {
+        setPlayingUI(true);
+      }).catch(() => {
+        // Autoplay blocked by the browser until the user interacts — that's fine,
+        // the player stays visible in a paused state and the button below will work.
+        setPlayingUI(false);
+      });
+    }
+
+    function playNextRandomTrack() {
+      if (failedTracks >= playlist.length) return; // every track 404'd — stop trying
+      playTrack(getRandomTrackIndex());
+    }
+
+    // If a song file is missing/broken (e.g. it wasn't uploaded to Netlify),
+    // skip it instead of silently failing, and hide the player entirely if
+    // every track is unavailable so the page never looks broken.
+    audio.addEventListener('error', () => {
+      const failedTrack = playlist[currentTrackIndex];
+      console.warn(`🎵 Track failed to load and will be skipped: ${failedTrack ? failedTrack.src : '(unknown)'}`, audio.error);
+      failedTracks++;
+      if (failedTracks >= playlist.length) {
+        if (musicPlayer) musicPlayer.style.display = 'none';
+        console.warn('No playable audio files found in assets/audio/. Add your song files there (see README).');
+        return;
+      }
+      playNextRandomTrack();
+    });
+
+    // Automatically shuffle to next song when current track ends
+    audio.addEventListener('ended', playNextRandomTrack);
+
+    // INSTANT PLAY WHEN USER OPENS INVITATION
+    if (enterSiteBtn) {
+      enterSiteBtn.addEventListener('click', () => {
+        welcomeModal.style.opacity = '0';
+        welcomeModal.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('no-scroll');
+        window.scrollTo({ left: 0, top: window.scrollY }); // defensively kill any sideways drift the instant the lock lifts
+        setTimeout(() => { welcomeModal.style.display = 'none'; }, 700);
+        playNextRandomTrack();
+        triggerConfetti();
+      });
+    }
+
+    // Manual Play/Pause Toggle
+    if (musicBtn) {
+      musicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPlaying) {
+          audio.pause();
+          setPlayingUI(false);
+        } else if (currentTrackIndex === -1) {
+          playNextRandomTrack();
+        } else {
+          audio.play().then(() => setPlayingUI(true)).catch(() => setPlayingUI(false));
+        }
+      });
+    }
+
+    // Next Track Button
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playNextRandomTrack();
+      });
+    }
+
+    /* ==========================================================
+       RSVP -> WhatsApp
+       ========================================================== */
+    const RSVP_WHATSAPP_NUMBER = '919061150956'; // country code + number, no + or spaces
+    const rsvpForm = document.getElementById('rsvpForm');
+
+    if (rsvpForm) {
+      rsvpForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('guestName').value.trim();
+        const message = document.getElementById('guestMessage').value.trim();
+
+        if (!name) {
+          document.getElementById('guestName').focus();
+          return;
+        }
+
+        const text = `Wedding Blessing 💐\nFrom: ${name}\n${message ? `Message: ${message}` : ''}`;
+        const url = `https://wa.me/${RSVP_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+
+        triggerConfetti();
+        window.open(url, '_blank', 'noopener,noreferrer');
+        rsvpForm.reset();
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
