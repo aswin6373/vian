@@ -225,6 +225,133 @@
     @media (min-width: 1536px) {
       .hero-bg h1 { font-size: 5.5rem; }
     }
+
+    /* ==========================================================
+       BEST MOMENTS GALLERY
+       ========================================================== */
+
+    /* Pinterest-style masonry using CSS columns — photos are
+       different aspect ratios, this lets them sit tight without
+       cropping or a JS layout library. */
+    .gallery-masonry {
+      column-count: 2;
+      column-gap: 0.625rem;
+    }
+    @media (min-width: 640px) {
+      .gallery-masonry { column-count: 3; column-gap: 0.875rem; }
+    }
+    @media (min-width: 1024px) {
+      .gallery-masonry { column-count: 4; column-gap: 1rem; }
+    }
+    .gallery-item {
+      break-inside: avoid;
+      margin-bottom: 0.625rem;
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      background: rgba(35, 10, 16, 0.6);
+      cursor: pointer;
+      opacity: 0;
+      animation: galleryItemIn 0.5s ease forwards;
+    }
+    @keyframes galleryItemIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .gallery-item img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.5s ease, filter 0.5s ease;
+    }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-item:hover { border-color: rgba(212, 175, 55, 0.7); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .gallery-item .gallery-caption {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 0.75rem 0.75rem 0.6rem;
+      background: linear-gradient(0deg, rgba(15,4,6,0.92) 0%, rgba(15,4,6,0) 100%);
+      font-size: 0.7rem;
+      color: #FFE5A3;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    .gallery-item:hover .gallery-caption { opacity: 1; transform: translateY(0); }
+
+    .gallery-item .gallery-delete-btn {
+      position: absolute;
+      top: 0.4rem; right: 0.4rem;
+      width: 1.9rem; height: 1.9rem;
+      border-radius: 9999px;
+      background: rgba(15, 4, 6, 0.85);
+      border: 1px solid rgba(224, 82, 82, 0.5);
+      color: #f87171;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+    .gallery-item:hover .gallery-delete-btn,
+    .gallery-item .gallery-delete-btn:focus-visible { opacity: 1; }
+    .gallery-item .gallery-delete-btn:hover { transform: scale(1.1); background: rgba(224, 82, 82, 0.25); }
+
+    .gallery-item .gallery-download-btn {
+      position: absolute;
+      top: 0.4rem; right: 2.55rem;
+      width: 1.9rem; height: 1.9rem;
+      border-radius: 9999px;
+      background: rgba(15, 4, 6, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      color: #FFE5A3;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .gallery-item:hover .gallery-download-btn,
+    .gallery-item .gallery-download-btn:focus-visible { opacity: 1; }
+    .gallery-item .gallery-download-btn:hover { transform: scale(1.1); background: rgba(212, 175, 55, 0.2); }
+
+    #dropzone.dropzone-active {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.08);
+    }
+
+    .upload-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.75rem;
+      color: #D9C79E;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.75rem;
+    }
+    .upload-row .upload-thumb {
+      width: 2.25rem; height: 2.25rem; border-radius: 0.5rem; object-fit: cover; flex-shrink: 0;
+      border: 1px solid rgba(212,175,55,0.3);
+    }
+    .upload-row .upload-bar-track {
+      flex: 1; height: 4px; border-radius: 4px; background: rgba(255,255,255,0.1); overflow: hidden;
+    }
+    .upload-row .upload-bar-fill {
+      height: 100%; width: 0%; background: linear-gradient(90deg, #D4AF37, #FFE5A3);
+      transition: width 0.2s ease;
+    }
+    .upload-row.upload-error .upload-bar-fill { background: #E05252; }
+    .upload-row .upload-status-icon { width: 1rem; text-align: center; flex-shrink: 0; }
+
+    /* Lightbox */
+    #lightbox.lightbox-open { display: flex; }
+    #lightboxImg { animation: lightboxFade 0.25s ease; }
+    @keyframes lightboxFade { from { opacity: 0; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }
   </style>
 </head>
 <body class="selection:bg-yellow-600 selection:text-white">
@@ -434,6 +561,81 @@
       </div>
     </div>
   </section>
+
+  <!-- Best Moments Gallery -->
+  <section id="gallery" class="py-14 sm:py-20 px-4 max-w-6xl mx-auto" aria-labelledby="gallery-heading">
+    <div class="text-center mb-10 sm:mb-14" data-aos="fade-up">
+      <i class="fas fa-camera-retro text-4xl text-yellow-400 mb-4" aria-hidden="true"></i>
+      <h2 id="gallery-heading" class="text-3xl sm:text-4xl font-serif-title gold-gradient-text mb-2">Best Moments</h2>
+      <p class="font-malayalam text-yellow-100/70 text-sm mb-3">ചടങ്ങിന്റെ മനോഹര നിമിഷങ്ങൾ</p>
+      <p class="text-gray-400 text-sm max-w-xl mx-auto">Captured something beautiful today? Share it here — every photo you add becomes part of our story, for everyone to see.</p>
+    </div>
+
+    <!-- Upload Card -->
+    <div class="glass-card rounded-3xl border border-yellow-500/30 p-5 sm:p-8 mb-10 sm:mb-14 max-w-3xl mx-auto" data-aos="zoom-in">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-5">
+        <label for="uploaderName" class="sr-only">Your name</label>
+        <input type="text" id="uploaderName" placeholder="Your name (optional)" maxlength="40" class="w-full sm:w-64 px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-yellow-400">
+        <p class="text-xs text-gray-500 flex-1">Shown next to your photos, so we know who to thank 💛</p>
+      </div>
+
+      <div id="dropzone" tabindex="0" role="button" aria-label="Upload photos to the gallery" class="relative rounded-2xl border-2 border-dashed border-yellow-500/40 hover:border-yellow-400 transition-colors duration-300 py-9 sm:py-12 px-4 text-center cursor-pointer">
+        <input type="file" id="fileInput" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-hidden="true">
+        <i class="fas fa-cloud-upload-alt text-3xl text-yellow-400 mb-3" aria-hidden="true"></i>
+        <p class="text-yellow-200 font-semibold text-sm">Tap to upload, or drag photos here</p>
+        <p class="text-gray-500 text-xs mt-1">JPG or PNG · up to 12MB each · as many as you like</p>
+      </div>
+
+      <div id="uploadTray" class="mt-4 space-y-2" aria-hidden="true"></div>
+      <p id="uploadStatus" class="text-xs text-center mt-3 min-h-[1rem]" role="status" aria-live="polite"></p>
+    </div>
+
+    <!-- Gallery Grid -->
+    <div data-aos="fade-up">
+      <div id="galleryLoading" class="text-center text-gray-500 text-sm py-10">
+        <i class="fas fa-circle-notch fa-spin mr-2" aria-hidden="true"></i> Loading moments&hellip;
+      </div>
+      <div id="galleryEmpty" class="hidden text-center text-gray-500 text-sm py-14">
+        <i class="fas fa-images text-3xl text-yellow-500/40 mb-3 block" aria-hidden="true"></i>
+        No moments shared yet &mdash; be the first!
+      </div>
+      <div id="galleryOffline" class="hidden text-center text-gray-500 text-sm py-14 max-w-md mx-auto">
+        <i class="fas fa-tools text-3xl text-yellow-500/40 mb-3 block" aria-hidden="true"></i>
+        The gallery is being set up &mdash; check back soon.
+      </div>
+      <div id="galleryGrid" class="gallery-masonry"></div>
+      <div class="text-center mt-8">
+        <button id="loadMoreBtn" type="button" class="hidden px-6 py-3 rounded-xl glass-card border border-yellow-500/40 text-yellow-300 text-sm font-semibold hover:border-yellow-400 transition">
+          Load More Moments
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Viewer -->
+  <div id="lightbox" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/95 p-4" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <button id="lightboxClose" type="button" aria-label="Close viewer" class="absolute top-4 right-4 sm:top-6 sm:right-6 text-yellow-300 text-lg w-11 h-11 rounded-full glass-card border border-yellow-500/40 flex items-center justify-center hover:scale-110 transition">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex items-center gap-2">
+      <a id="lightboxDownload" href="#" aria-label="Download this photo" class="text-yellow-300 text-lg w-11 h-11 rounded-full glass-card border border-yellow-500/40 flex items-center justify-center hover:scale-110 transition">
+        <i class="fas fa-download" aria-hidden="true"></i>
+      </a>
+      <button id="lightboxDelete" type="button" aria-label="Delete this photo" class="text-red-400 text-lg w-11 h-11 rounded-full glass-card border border-red-500/40 flex items-center justify-center hover:scale-110 transition">
+        <i class="fas fa-trash" aria-hidden="true"></i>
+      </button>
+    </div>
+    <button id="lightboxPrev" type="button" aria-label="Previous photo" class="absolute left-2 sm:left-6 text-yellow-300 text-lg w-11 h-11 rounded-full glass-card border border-yellow-500/40 flex items-center justify-center hover:scale-110 transition">
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <button id="lightboxNext" type="button" aria-label="Next photo" class="absolute right-2 sm:right-6 text-yellow-300 text-lg w-11 h-11 rounded-full glass-card border border-yellow-500/40 flex items-center justify-center hover:scale-110 transition">
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+    </button>
+    <figure class="max-w-4xl w-full max-h-full flex flex-col items-center">
+      <img id="lightboxImg" src="" alt="" class="max-h-[75vh] max-w-full rounded-xl shadow-2xl border border-yellow-500/30 object-contain">
+      <figcaption id="lightboxCaption" class="text-yellow-200 text-sm mt-4 text-center"></figcaption>
+    </figure>
+  </div>
 
   <!-- Interactive RSVP & Blessings Section -->
   <section class="py-14 sm:py-20 px-4 max-w-3xl mx-auto text-center" data-aos="fade-up" aria-labelledby="rsvp-heading">
@@ -716,6 +918,373 @@
       });
     }
   })();
+  </script>
+
+  <!-- ================================================================
+       BEST MOMENTS GALLERY — Cloudinary (photo files) + Firestore (list)
+       ----------------------------------------------------------------
+       Both are free with no credit card required.
+       1. Fill in `firebaseConfig` AND `cloudinaryConfig` below.
+       2. See GALLERY-SETUP.md (next to this file) for the exact steps
+          — creating both free accounts and the Firestore rules to paste in.
+       Until configured, this section shows a friendly "being set up"
+       message instead of breaking the page.
+       ================================================================ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp,
+      query, orderBy, limit, onSnapshot, startAfter, getDocs,
+      deleteDoc, doc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // ---- 1. PASTE YOUR FIREBASE CONFIG HERE (stores the photo list) ----
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1v6Okj4Qt9w1cmojAGWDzGc4RJOleZtw",
+      authDomain: "vishnu-anitha-wedding.firebaseapp.com",
+      projectId: "vishnu-anitha-wedding",
+      storageBucket: "vishnu-anitha-wedding.firebasestorage.app",
+      messagingSenderId: "603257567713",
+      appId: "1:603257567713:web:98bee6a8af1a6bbabc7aa0",
+      measurementId: "G-QS4G51NEVM"
+    };
+
+    // ---- 2. PASTE YOUR CLOUDINARY CONFIG HERE (stores the photo files) --
+    const cloudinaryConfig = {
+      cloudName: "cpfrbubr",
+      uploadPreset: "vishnu-anitha-wedding"
+    };
+    // ---------------------------------------------------------------------
+
+    const PAGE_SIZE = 24;
+    const MAX_SOURCE_MB = 12;
+    const MAX_EDGE_PX = 1600;      // longest side after client-side resize
+    const JPEG_QUALITY = 0.82;
+
+    const isConfigured = firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith('YOUR_')
+      && cloudinaryConfig.cloudName && !cloudinaryConfig.cloudName.startsWith('YOUR_');
+
+    const galleryLoading = document.getElementById('galleryLoading');
+    const galleryEmpty = document.getElementById('galleryEmpty');
+    const galleryOffline = document.getElementById('galleryOffline');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const uploaderNameInput = document.getElementById('uploaderName');
+    const uploadTray = document.getElementById('uploadTray');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    // Remember the guest's name between visits so they don't retype it.
+    try {
+      const savedName = localStorage.getItem('wedding_uploader_name');
+      if (savedName) uploaderNameInput.value = savedName;
+    } catch (e) { /* localStorage unavailable — non-critical */ }
+    uploaderNameInput.addEventListener('change', () => {
+      try { localStorage.setItem('wedding_uploader_name', uploaderNameInput.value.trim()); } catch (e) {}
+    });
+
+    if (!isConfigured) {
+      galleryLoading.classList.add('hidden');
+      galleryOffline.classList.remove('hidden');
+      dropzone.classList.add('opacity-50', 'pointer-events-none');
+      dropzone.setAttribute('aria-disabled', 'true');
+    } else {
+      initGallery();
+    }
+
+    function initGallery() {
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const galleryCol = collection(db, 'gallery');
+
+      let lastVisible = null;
+      let allItems = [];      // { id, imageUrl, uploaderName, createdAt }
+      let lightboxIndex = -1;
+
+      // ---- Live first page: new uploads from anyone appear instantly ----
+      const liveQuery = query(galleryCol, orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
+      onSnapshot(liveQuery, (snap) => {
+        galleryLoading.classList.add('hidden');
+        const items = snap.docs.map(docToItem);
+        if (items.length) lastVisible = snap.docs[snap.docs.length - 1];
+
+        // Merge live first page with any already-loaded older pages
+        const olderItems = allItems.filter(i => !items.find(n => n.id === i.id) && isOlderThan(i, items));
+        allItems = dedupe([...items, ...olderItems]);
+        renderGrid();
+
+        galleryEmpty.classList.toggle('hidden', allItems.length !== 0);
+        loadMoreBtn.classList.toggle('hidden', snap.docs.length < PAGE_SIZE);
+      }, (err) => {
+        console.warn('Gallery failed to load — check Firestore rules / config.', err);
+        galleryLoading.classList.add('hidden');
+        galleryOffline.classList.remove('hidden');
+      });
+
+      function isOlderThan(item, firstPage) {
+        if (!firstPage.length) return true;
+        const oldestNewTs = firstPage[firstPage.length - 1].createdAt || 0;
+        return (item.createdAt || 0) < oldestNewTs;
+      }
+      function dedupe(items) {
+        const seen = new Set();
+        return items.filter(i => (seen.has(i.id) ? false : (seen.add(i.id), true)));
+      }
+      function docToItem(d) {
+        const data = d.data();
+        return {
+          id: d.id,
+          imageUrl: data.imageUrl,
+          uploaderName: (data.uploaderName || '').trim(),
+          createdAt: data.createdAt ? data.createdAt.toMillis() : Date.now()
+        };
+      }
+
+      loadMoreBtn.addEventListener('click', async () => {
+        if (!lastVisible) return;
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
+        try {
+          const moreQuery = query(galleryCol, orderBy('createdAt', 'desc'), startAfter(lastVisible), limit(PAGE_SIZE));
+          const snap = await getDocs(moreQuery);
+          const items = snap.docs.map(docToItem);
+          if (snap.docs.length) lastVisible = snap.docs[snap.docs.length - 1];
+          allItems = dedupe([...allItems, ...items]);
+          renderGrid();
+          loadMoreBtn.classList.toggle('hidden', snap.docs.length < PAGE_SIZE);
+        } finally {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.textContent = 'Load More Moments';
+        }
+      });
+
+      function toDownloadUrl(url) {
+        // Cloudinary: inserting fl_attachment forces a real download instead
+        // of the browser just navigating to/opening the image.
+        return url.includes('/upload/') ? url.replace('/upload/', '/upload/fl_attachment/') : url;
+      }
+
+      function renderGrid() {
+        galleryGrid.innerHTML = '';
+        allItems.forEach((item, idx) => {
+          const fig = document.createElement('figure');
+          fig.className = 'gallery-item';
+          fig.style.animationDelay = `${Math.min(idx, 12) * 0.04}s`;
+          fig.innerHTML = `
+            <img src="${escapeAttr(item.imageUrl)}" alt="Wedding moment${item.uploaderName ? ' shared by ' + escapeAttr(item.uploaderName) : ''}" loading="lazy">
+            ${item.uploaderName ? `<figcaption class="gallery-caption"><i class="fas fa-heart mr-1" aria-hidden="true"></i>${escapeHtml(item.uploaderName)}</figcaption>` : ''}
+            <a class="gallery-download-btn" href="${escapeAttr(toDownloadUrl(item.imageUrl))}" download aria-label="Download this photo"><i class="fas fa-download" aria-hidden="true"></i></a>
+            <button type="button" class="gallery-delete-btn" aria-label="Delete this photo"><i class="fas fa-trash" aria-hidden="true"></i></button>
+          `;
+          fig.addEventListener('click', () => openLightbox(idx));
+          fig.querySelector('.gallery-download-btn').addEventListener('click', (e) => e.stopPropagation());
+          fig.querySelector('.gallery-delete-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteItem(item.id);
+          });
+          galleryGrid.appendChild(fig);
+        });
+      }
+
+      async function deleteItem(id) {
+        if (!confirm('Remove this photo from the gallery? This can\'t be undone.')) return;
+        try {
+          await deleteDoc(doc(db, 'gallery', id));
+          // Don't wait on the live listener — it only watches the first page,
+          // so a photo loaded via "Load More" wouldn't disappear until a
+          // reload. Remove it from view immediately instead.
+          allItems = allItems.filter(i => i.id !== id);
+          renderGrid();
+          galleryEmpty.classList.toggle('hidden', allItems.length !== 0);
+          if (lightbox.classList.contains('lightbox-open')) closeLightbox();
+        } catch (err) {
+          console.warn('Delete failed:', err);
+          alert('Could not delete this photo. Please check your connection and try again.');
+        }
+      }
+
+      // ---- Lightbox ----
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxCaption = document.getElementById('lightboxCaption');
+
+      function openLightbox(idx) {
+        lightboxIndex = idx;
+        showLightboxItem();
+        lightbox.classList.add('lightbox-open');
+        lightbox.classList.remove('hidden');
+        document.documentElement.classList.add('no-scroll');
+      }
+      function closeLightbox() {
+        lightbox.classList.remove('lightbox-open');
+        lightbox.classList.add('hidden');
+        document.documentElement.classList.remove('no-scroll');
+      }
+      const lightboxDownloadBtn = document.getElementById('lightboxDownload');
+      function showLightboxItem() {
+        const item = allItems[lightboxIndex];
+        if (!item) return;
+        lightboxImg.src = item.imageUrl;
+        lightboxImg.alt = item.uploaderName ? `Photo shared by ${item.uploaderName}` : 'Wedding moment';
+        lightboxCaption.textContent = item.uploaderName ? `Shared by ${item.uploaderName}` : '';
+        lightboxDownloadBtn.href = toDownloadUrl(item.imageUrl);
+        lightboxDownloadBtn.setAttribute('download', '');
+      }
+      document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+      document.getElementById('lightboxDelete').addEventListener('click', () => {
+        const item = allItems[lightboxIndex];
+        if (item) deleteItem(item.id);
+      });
+      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+      document.getElementById('lightboxPrev').addEventListener('click', () => {
+        if (!allItems.length) return;
+        lightboxIndex = (lightboxIndex - 1 + allItems.length) % allItems.length;
+        showLightboxItem();
+      });
+      document.getElementById('lightboxNext').addEventListener('click', () => {
+        if (!allItems.length) return;
+        lightboxIndex = (lightboxIndex + 1) % allItems.length;
+        showLightboxItem();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('lightbox-open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') document.getElementById('lightboxPrev').click();
+        if (e.key === 'ArrowRight') document.getElementById('lightboxNext').click();
+      });
+
+      // ---- Upload flow ----
+      dropzone.addEventListener('click', () => fileInput.click());
+      dropzone.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+      });
+      ['dragenter', 'dragover'].forEach(evt => dropzone.addEventListener(evt, (e) => {
+        e.preventDefault(); dropzone.classList.add('dropzone-active');
+      }));
+      ['dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, (e) => {
+        e.preventDefault(); dropzone.classList.remove('dropzone-active');
+      }));
+      dropzone.addEventListener('drop', (e) => {
+        const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+        if (files.length) handleFiles(files);
+      });
+      fileInput.addEventListener('change', () => {
+        const files = Array.from(fileInput.files || []);
+        if (files.length) handleFiles(files);
+        fileInput.value = '';
+      });
+
+      async function handleFiles(files) {
+        const name = uploaderNameInput.value.trim();
+        uploadStatus.textContent = '';
+        for (const file of files) {
+          if (!file.type.startsWith('image/')) continue;
+          if (file.size > MAX_SOURCE_MB * 1024 * 1024) {
+            uploadStatus.textContent = `${file.name} is over ${MAX_SOURCE_MB}MB and was skipped.`;
+            continue;
+          }
+          uploadOne(file, name);
+        }
+      }
+
+      async function uploadOne(file, uploaderName) {
+        const row = document.createElement('div');
+        row.className = 'upload-row';
+        const previewUrl = URL.createObjectURL(file);
+        row.innerHTML = `
+          <img class="upload-thumb" src="${previewUrl}" alt="">
+          <span class="truncate flex-1">${escapeHtml(file.name)}</span>
+          <div class="upload-bar-track"><div class="upload-bar-fill"></div></div>
+          <span class="upload-status-icon"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i></span>
+        `;
+        uploadTray.appendChild(row);
+        const bar = row.querySelector('.upload-bar-fill');
+        const statusIcon = row.querySelector('.upload-status-icon');
+
+        try {
+          const blob = await compressImage(file, MAX_EDGE_PX, JPEG_QUALITY);
+          const imageUrl = await uploadToCloudinary(blob, (pct) => { bar.style.width = pct + '%'; });
+
+          await addDoc(galleryCol, {
+            imageUrl,
+            uploaderName: uploaderName || '',
+            createdAt: serverTimestamp()
+          });
+          statusIcon.innerHTML = '<i class="fas fa-check text-green-400" aria-hidden="true"></i>';
+          setTimeout(() => row.remove(), 1500);
+        } catch (err) {
+          console.warn('Upload failed:', err);
+          row.classList.add('upload-error');
+          statusIcon.innerHTML = '<i class="fas fa-exclamation-circle" aria-hidden="true"></i>';
+          uploadStatus.textContent = 'Some photos failed to upload. Please check your connection and try again.';
+        } finally {
+          URL.revokeObjectURL(previewUrl);
+        }
+      }
+
+      // Uploads straight to Cloudinary from the browser (unsigned preset —
+      // no server, no API secret exposed) and reports progress via XHR
+      // since fetch() doesn't expose upload progress events.
+      function uploadToCloudinary(blob, onProgress) {
+        return new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append('file', blob);
+          formData.append('upload_preset', cloudinaryConfig.uploadPreset);
+          formData.append('folder', 'gallery');
+
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`);
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+          };
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                resolve(data.secure_url);
+              } catch (e) { reject(e); }
+            } else {
+              reject(new Error(`Cloudinary upload failed (${xhr.status}): ${xhr.responseText}`));
+            }
+          };
+          xhr.onerror = () => reject(new Error('Network error during upload'));
+          xhr.send(formData);
+        });
+      }
+
+      // Resize + re-encode client-side so a 10MB phone photo becomes a
+      // small, fast-loading JPEG before it ever leaves the guest's device.
+      function compressImage(file, maxEdge, quality) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
+          reader.onload = () => { img.src = reader.result; };
+          reader.onerror = reject;
+          img.onload = () => {
+            let { width, height } = img;
+            if (width > maxEdge || height > maxEdge) {
+              if (width >= height) { height = Math.round(height * (maxEdge / width)); width = maxEdge; }
+              else { width = Math.round(width * (maxEdge / height)); height = maxEdge; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob((blob) => {
+              if (blob) resolve(blob); else reject(new Error('Compression failed'));
+            }, 'image/jpeg', quality);
+          };
+          img.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function escapeAttr(str) { return escapeHtml(str); }
   </script>
 </body>
 </html>
