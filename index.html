@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Vishnu & Anitha | Wedding Invitation</title>
   <meta name="description" content="Join us as Vishnu & Anitha begin their new journey together — September 13, 2026, Chamravattam, Kerala.">
-  <meta name="theme-color" content="#0F0406">
+  <meta name="theme-color" content="#170B22">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Vishnu & Anitha | Wedding Invitation">
@@ -59,6 +59,11 @@
     :root {
       --gold: #D4AF37;
       --maroon: #4A0E17;
+      /* Palette pulled straight from the entrance photo (lavender fields) */
+      --lavender: #B7A3E0;
+      --lavender-light: #E4DBF7;
+      --lavender-deep: #3D2D63;
+      --plum: #170B22;
     }
 
     html {
@@ -72,14 +77,78 @@
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #0F0406;
+      background-color: var(--plum);
       color: #F8F5F0;
       overflow-x: hidden;
     }
 
-    .font-serif-title { font-family: 'Cinzel', serif; }
+    /* Ambient lavender + gold light, blurred behind the frosted glass
+       panels — pulled straight from the entrance photo's palette. This
+       is what makes the glass cards actually read as glass. */
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.32;
+      z-index: -1;
+      pointer-events: none;
+    }
+    body::before {
+      width: 26rem; height: 26rem;
+      background: var(--lavender);
+      top: -7rem; left: -8rem;
+    }
+    body::after {
+      width: 22rem; height: 22rem;
+      background: var(--gold);
+      bottom: -6rem; right: -7rem;
+    }
+
+    .font-serif-title { font-family: 'Cinzel', serif; letter-spacing: 0.02em; }
     .font-script { font-family: 'Great Vibes', cursive; }
     .font-malayalam { font-family: 'Noto Sans Malayalam', sans-serif; }
+
+    /* Classic invitation typography: a small lavender "eyebrow" label
+       above every gold heading — the same convention used on printed
+       wedding stationery. */
+    .eyebrow {
+      color: var(--lavender-light);
+      letter-spacing: 0.28em;
+    }
+
+    /* Ornamental divider — a hairline / diamond / hairline motif used
+       under section headings, replacing the plain flat bars for a more
+       classic, engraved-invitation feel. */
+    .ornate-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+    }
+    .ornate-divider .odv-line {
+      width: 2.75rem;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+    }
+    .ornate-divider .odv-line.odv-right {
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .ornate-divider .odv-diamond {
+      width: 7px;
+      height: 7px;
+      flex-shrink: 0;
+      background: var(--lavender);
+      transform: rotate(45deg);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    /* Refined double-line frame for the site's signature cards (entrance,
+       RSVP, upload) — a classic bordered-card look instead of a single flat line. */
+    .card-frame {
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) inset, 0 20px 45px rgba(0, 0, 0, 0.5);
+    }
 
     .gold-gradient-text {
       background: linear-gradient(135deg, #FFE5A3 0%, #D4AF37 50%, #AA7C11 100%);
@@ -89,18 +158,45 @@
     }
 
     .glass-card {
-      background: rgba(35, 10, 16, 0.85);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      position: relative;
+      background: linear-gradient(135deg, rgba(183, 163, 224, 0.16) 0%, rgba(61, 45, 99, 0.32) 100%);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 8px 32px rgba(23, 11, 34, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    /* Glass shine — a soft diagonal highlight across the top of every
+       card, the way light catches real glass */
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.02) 30%, rgba(255, 255, 255, 0) 55%);
+      pointer-events: none;
     }
 
     .hero-bg {
-      background: linear-gradient(180deg, rgba(15, 4, 6, 0.5) 0%, rgba(15, 4, 6, 0.95) 100%),
+      background: linear-gradient(180deg, rgba(23, 11, 34, 0.5) 0%, rgba(23, 11, 34, 0.95) 100%),
                   url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
+    }
+
+    /* Frosted-glass inputs & dropzone, matching the card treatment */
+    .glass-input {
+      background: rgba(183, 163, 224, 0.08);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    .glass-input:focus { border-color: var(--gold); }
+
+    /* Frosted badge pills (ceremony type tags) */
+    .glass-pill {
+      backdrop-filter: blur(10px) saturate(150%);
+      -webkit-backdrop-filter: blur(10px) saturate(150%);
     }
 
     /* iOS Safari doesn't render background-attachment:fixed well — fall back to scroll on touch devices */
@@ -115,7 +211,7 @@
     }
     .petal {
       position: absolute;
-      background: linear-gradient(135deg, #d4af37, #8a1424);
+      background: linear-gradient(135deg, #d4af37, #9C89C7);
       border-radius: 150% 0 150% 0;
       pointer-events: none;
       z-index: 10;
@@ -200,14 +296,24 @@
        monitors; the rest of the viewport (on very wide screens only)
        shows the site's normal dark background instead of a stretched photo. */
     #welcomeModal {
-      background-color: #0F0406;
+      background-color: var(--plum);
     }
 
+    /* The couple photo is shown in full, exactly as uploaded — no cropping
+       or over-zooming on any screen size. background-size:cover was
+       stretching/cropping the portrait image to fill tall phone screens,
+       which is what made it look "zoomed in" on mobile. Using `contain`
+       shows the whole photo untouched; the lavender fallback colour behind
+       it matches the photo's own background so any letterboxed edge blends
+       in seamlessly instead of showing hard bars. */
     .entrance-photo-panel {
-      background: linear-gradient(180deg, rgba(15, 4, 6, 0.05) 0%, rgba(15, 4, 6, 0.15) 45%, rgba(15, 4, 6, 0.55) 100%),
-                  url('assets/images/entrance-bg.jpg');
-      background-size: cover;
-      background-position: top center;
+      background-color: #C7BEE3;
+      background-image:
+        linear-gradient(180deg, rgba(61, 45, 99, 0.1) 0%, rgba(61, 45, 99, 0.25) 45%, rgba(23, 11, 34, 0.7) 100%),
+        url('assets/images/entrance-bg.jpg');
+      background-size: cover, contain;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
       padding-top: max(1rem, env(safe-area-inset-top));
       padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
       padding-left: max(1rem, env(safe-area-inset-left));
@@ -215,6 +321,41 @@
     }
     @media (min-width: 640px) {
       .entrance-photo-panel { max-width: 30rem; box-shadow: 0 0 80px rgba(0, 0, 0, 0.5); }
+    }
+
+    /* Entrance card — a frosted glass panel tinted with the lavender
+       pulled from the photo, paired with the site's gold for a classic,
+       elegant combination */
+    #welcomeModal .glass-card {
+      background: linear-gradient(165deg, rgba(183, 163, 224, 0.22) 0%, rgba(23, 11, 34, 0.55) 100%);
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(212, 175, 55, 0.15) inset;
+    }
+
+    /* ---------------------------------------------------------------
+       Elegant preloader — covers the screen while the entrance photo
+       and fonts load, so nothing pops/flashes into view.
+       --------------------------------------------------------------- */
+    #pageLoader {
+      background-color: var(--plum);
+      transition: opacity 0.5s ease;
+    }
+    #pageLoader .loader-ring {
+      width: 3.25rem;
+      height: 3.25rem;
+      border-radius: 50%;
+      border: 3px solid rgba(183, 163, 224, 0.25);
+      border-top-color: var(--gold);
+      border-right-color: var(--lavender);
+      animation: loaderSpin 0.9s linear infinite;
+    }
+    @keyframes loaderSpin {
+      to { transform: rotate(360deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #pageLoader .loader-ring { animation-duration: 2.4s; }
     }
 
     /* Let the hero title breathe a little more on large desktop monitors
@@ -249,8 +390,10 @@
       position: relative;
       border-radius: 1rem;
       overflow: hidden;
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      background: rgba(35, 10, 16, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(183, 163, 224, 0.1);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
       cursor: pointer;
       opacity: 0;
       animation: galleryItemIn 0.5s ease forwards;
@@ -358,18 +501,26 @@
 
   <a href="#main-content" class="skip-link">Skip to content</a>
 
+  <!-- Elegant Preloader — shown while the entrance photo + fonts load,
+       so the invitation never pops/flashes into view unfinished -->
+  <div id="pageLoader" class="fixed inset-0 z-[110] flex flex-col items-center justify-center gap-4" aria-hidden="true">
+    <div class="loader-ring" aria-hidden="true"></div>
+    <p class="font-script text-2xl sm:text-3xl gold-gradient-text">Vishnu &amp; Anitha</p>
+    <p class="text-[11px] text-purple-200/70 uppercase tracking-[0.2em]">Preparing your invitation&hellip;</p>
+  </div>
+
   <!-- Instant Music Entrance Screen Overlay -->
-  <div id="welcomeModal" class="fixed inset-0 z-[100] flex justify-center transition-opacity duration-700">
+  <div id="welcomeModal" class="fixed inset-0 z-[100] flex justify-center opacity-0 transition-opacity duration-700">
     <div class="entrance-photo-panel relative w-full flex flex-col items-center justify-end text-center p-4 sm:p-6">
     <div class="glass-card p-6 sm:p-8 md:p-12 rounded-3xl w-full max-w-xs sm:max-w-sm border border-yellow-500/50 shadow-2xl relative">
       <div class="mb-3">
         <span class="text-4xl text-yellow-400 font-bold font-malayalam">ശ്രീ</span>
       </div>
-      <p class="text-xs text-yellow-200 uppercase tracking-widest mb-1">Wedding Invitation</p>
+      <p class="text-xs eyebrow uppercase mb-1">Wedding Invitation</p>
       <h2 class="text-3xl font-serif-title gold-gradient-text">Vishnu & Anitha</h2>
       <p class="text-sm font-malayalam text-gray-300 mt-2 mb-6">2026 സെപ്തംബർ 13</p>
 
-      <button id="enterSiteBtn" type="button" class="w-full py-4 rounded-full bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-sm tracking-wider uppercase hover:scale-105 transition shadow-2xl flex items-center justify-center gap-2 animate-pulse">
+      <button id="enterSiteBtn" type="button" class="w-full py-4 rounded-full bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-sm tracking-wider uppercase hover:scale-105 transition shadow-2xl flex items-center justify-center gap-2 animate-pulse ring-2 ring-purple-200/30">
         <span>Open Invitation</span> <i class="fas fa-envelope-open" aria-hidden="true"></i>
       </button>
     </div>
@@ -409,17 +560,19 @@
     </div>
 
     <div data-aos="zoom-in" data-aos-duration="1500" class="max-w-3xl mx-auto">
-      <p class="text-yellow-200/80 tracking-[0.3em] uppercase text-xs md:text-sm mb-3">Save Our Date</p>
+      <p class="eyebrow tracking-[0.3em] uppercase text-xs md:text-sm mb-3">Save Our Date</p>
 
       <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold font-serif-title tracking-wide mb-2 gold-gradient-text break-words">
-        VISHNU <span class="text-2xl sm:text-3xl md:text-5xl font-script text-red-400">&amp;</span> ANITHA
+        VISHNU <span class="text-2xl sm:text-3xl md:text-5xl font-script text-[#C7B6E8]">&amp;</span> ANITHA
       </h1>
 
       <p class="font-malayalam text-lg md:text-xl text-yellow-100/90 mt-2 font-light">
         വിവാഹിതരാവുകയാണ്
       </p>
 
-      <div class="w-32 h-[1px] bg-gradient-to-r from-transparent via-yellow-500 to-transparent mx-auto my-6"></div>
+      <div class="ornate-divider my-6" aria-hidden="true">
+        <span class="odv-line"></span><span class="odv-diamond"></span><span class="odv-line odv-right"></span>
+      </div>
 
       <!-- Date Banner -->
       <div class="inline-block glass-card px-5 sm:px-8 py-3 sm:py-4 rounded-2xl mb-8 max-w-full">
@@ -458,7 +611,9 @@
   <section class="py-14 sm:py-20 px-4 max-w-5xl mx-auto" aria-labelledby="couple-heading">
     <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
       <h2 id="couple-heading" class="text-3xl md:text-4xl font-serif-title gold-gradient-text mb-2">The Happy Couple</h2>
-      <div class="w-16 h-[2px] bg-yellow-500 mx-auto"></div>
+      <div class="ornate-divider" aria-hidden="true">
+        <span class="odv-line"></span><span class="odv-diamond"></span><span class="odv-line odv-right"></span>
+      </div>
     </div>
 
     <!-- Couple Photo Banner (swap assets/images/couple-photo.jpg for your real photo — same filename, any time) -->
@@ -477,7 +632,7 @@
     <div class="grid md:grid-cols-2 gap-5 sm:gap-8 md:gap-12">
       <!-- Groom -->
       <div class="glass-card p-6 sm:p-8 rounded-3xl text-center relative overflow-hidden" data-aos="fade-right">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-600 to-yellow-300"></div>
+        <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-yellow-400 to-transparent"></div>
         <h3 class="text-2xl font-bold font-serif-title text-yellow-300 mt-3">Vishnu</h3>
         <p class="text-xs text-yellow-100/60 font-malayalam mt-1">ഞങ്ങളുടെ മകൻ</p>
 
@@ -489,7 +644,7 @@
 
       <!-- Bride -->
       <div class="glass-card p-6 sm:p-8 rounded-3xl text-center relative overflow-hidden" data-aos="fade-left">
-        <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-300 to-yellow-600"></div>
+        <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-yellow-400 to-transparent"></div>
         <h3 class="text-2xl font-bold font-serif-title text-yellow-300 mt-3">Anitha</h3>
         <p class="text-xs text-yellow-100/60 font-malayalam mt-1">വധു</p>
 
@@ -505,9 +660,11 @@
   <section class="py-14 sm:py-20 px-4 bg-black/40 relative" aria-labelledby="venue-heading">
     <div class="max-w-5xl mx-auto">
       <div class="text-center mb-10 sm:mb-16" data-aos="fade-up">
-        <p class="text-yellow-400 text-sm tracking-widest uppercase mb-1">Navigation &amp; Timings</p>
+        <p class="eyebrow text-sm uppercase mb-1">Navigation &amp; Timings</p>
         <h2 id="venue-heading" class="text-3xl md:text-5xl font-serif-title gold-gradient-text">Wedding Locations</h2>
-        <div class="w-20 h-[2px] bg-yellow-500 mx-auto mt-3"></div>
+        <div class="ornate-divider mt-3" aria-hidden="true">
+          <span class="odv-line"></span><span class="odv-diamond"></span><span class="odv-line odv-right"></span>
+        </div>
       </div>
 
       <div class="grid md:grid-cols-2 gap-5 sm:gap-8">
@@ -516,21 +673,21 @@
         <div class="glass-card p-6 sm:p-8 rounded-3xl flex flex-col justify-between hover:border-yellow-500/60 transition" data-aos="zoom-in-up">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-semibold px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-500/30 font-malayalam">താലികെട്ട്</span>
+              <span class="glass-pill text-xs font-semibold px-3 py-1 bg-yellow-500/15 text-yellow-300 rounded-full border border-white/20 font-malayalam">താലികെട്ട്</span>
               <i class="fas fa-ring text-2xl text-yellow-400" aria-hidden="true"></i>
             </div>
 
             <h3 class="text-2xl font-bold font-serif-title text-white">Marriage Ceremony</h3>
             <p class="font-malayalam text-yellow-200 text-sm mt-2"><i class="far fa-clock mr-2" aria-hidden="true"></i>രാവിലെ 10:00 നും 10:30 നും മധ്യേ</p>
 
-            <div class="my-6 p-4 rounded-2xl bg-black/40 border border-yellow-500/20">
+            <div class="my-6 p-4 rounded-2xl glass-input border-yellow-500/20">
               <p class="font-semibold text-yellow-300 font-malayalam"><i class="fas fa-map-marker-alt text-red-500 mr-2" aria-hidden="true"></i>വധുഗൃഹം (Bride's House)</p>
               <p class="text-sm text-gray-300 font-malayalam mt-1">പെരുംപറമ്പിൽ ഹൗസ്, ചമ്രവട്ടം</p>
               <p class="text-xs text-gray-400 mt-1">Perumparambil House, Chamravattam, Kerala</p>
             </div>
           </div>
 
-          <a href="https://www.google.com/maps/place/10%C2%B049'59.2%22N+75%C2%B057'26.8%22E/@10.8330984,75.954876,17z/data=!3m1!4b1!4m4!3m3!8m2!3d10.8330984!4d75.9574509?hl=en&entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
+          <a href="https://www.google.com/maps/place/10%C2%B049'59.2%22N+75%C2%B057'26.8%22E/@10.8330984,75.954876,17z/data=!3m1!4b1!4m4!3m3!8m2!3d10.8330984!4d75.9574509?hl=en&entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2 ring-1 ring-purple-200/30">
             <i class="fas fa-location-arrow" aria-hidden="true"></i> Open Directions in Google Maps
           </a>
         </div>
@@ -539,21 +696,21 @@
         <div class="glass-card p-6 sm:p-8 rounded-3xl flex flex-col justify-between hover:border-yellow-500/60 transition" data-aos="zoom-in-up" data-aos-delay="200">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xs font-semibold px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full border border-yellow-500/30 font-malayalam">സൗഹൃദ സൽക്കാരം</span>
+              <span class="glass-pill text-xs font-semibold px-3 py-1 bg-yellow-500/15 text-yellow-300 rounded-full border border-white/20 font-malayalam">സൗഹൃദ സൽക്കാരം</span>
               <i class="fas fa-glass-cheers text-2xl text-yellow-400" aria-hidden="true"></i>
             </div>
 
             <h3 class="text-2xl font-bold font-serif-title text-white">Evening Reception</h3>
             <p class="font-malayalam text-yellow-200 text-sm mt-2"><i class="far fa-clock mr-2" aria-hidden="true"></i>വൈകുന്നേരം 4:00 മുതൽ 9:00 വരെ</p>
 
-            <div class="my-6 p-4 rounded-2xl bg-black/40 border border-yellow-500/20">
+            <div class="my-6 p-4 rounded-2xl glass-input border-yellow-500/20">
               <p class="font-semibold text-yellow-300 font-malayalam"><i class="fas fa-home text-red-500 mr-2" aria-hidden="true"></i>ഞങ്ങളുടെ വീട്ടിൽവച്ചു (Groom's House)</p>
               <p class="text-sm text-gray-300 font-malayalam mt-1">കോടൂർ ഹൗസ്, കാവിലക്കാട്</p>
               <p class="text-xs text-gray-400 mt-1">Kodur House, Kavilakkad, Kerala</p>
             </div>
           </div>
 
-          <a href="https://maps.app.goo.gl/hzCoxwtsBEx5LMYR8?g_st=awb" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
+          <a href="https://maps.app.goo.gl/hzCoxwtsBEx5LMYR8?g_st=awb" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2 ring-1 ring-purple-200/30">
             <i class="fas fa-location-arrow" aria-hidden="true"></i> Open Directions in Google Maps
           </a>
         </div>
@@ -567,19 +724,22 @@
     <div class="text-center mb-10 sm:mb-14" data-aos="fade-up">
       <i class="fas fa-camera-retro text-4xl text-yellow-400 mb-4" aria-hidden="true"></i>
       <h2 id="gallery-heading" class="text-3xl sm:text-4xl font-serif-title gold-gradient-text mb-2">Best Moments</h2>
+      <div class="ornate-divider mb-3" aria-hidden="true">
+        <span class="odv-line"></span><span class="odv-diamond"></span><span class="odv-line odv-right"></span>
+      </div>
       <p class="font-malayalam text-yellow-100/70 text-sm mb-3">ചടങ്ങിന്റെ മനോഹര നിമിഷങ്ങൾ</p>
       <p class="text-gray-400 text-sm max-w-xl mx-auto">Captured something beautiful today? Share it here — every photo you add becomes part of our story, for everyone to see.</p>
     </div>
 
     <!-- Upload Card -->
-    <div class="glass-card rounded-3xl border border-yellow-500/30 p-5 sm:p-8 mb-10 sm:mb-14 max-w-3xl mx-auto" data-aos="zoom-in">
+    <div class="glass-card card-frame rounded-3xl p-5 sm:p-8 mb-10 sm:mb-14 max-w-3xl mx-auto" data-aos="zoom-in">
       <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-5">
         <label for="uploaderName" class="sr-only">Your name</label>
-        <input type="text" id="uploaderName" placeholder="Your name (optional)" maxlength="40" class="w-full sm:w-64 px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-yellow-400">
+        <input type="text" id="uploaderName" placeholder="Your name (optional)" maxlength="40" class="glass-input w-full sm:w-64 px-4 py-3 rounded-xl text-white placeholder-gray-400 text-sm focus:outline-none transition-colors">
         <p class="text-xs text-gray-500 flex-1">Shown next to your photos, so we know who to thank 💛</p>
       </div>
 
-      <div id="dropzone" tabindex="0" role="button" aria-label="Upload photos to the gallery" class="relative rounded-2xl border-2 border-dashed border-yellow-500/40 hover:border-yellow-400 transition-colors duration-300 py-9 sm:py-12 px-4 text-center cursor-pointer">
+      <div id="dropzone" tabindex="0" role="button" aria-label="Upload photos to the gallery" class="glass-input relative rounded-2xl border-2 border-dashed border-yellow-500/40 hover:border-yellow-400 transition-colors duration-300 py-9 sm:py-12 px-4 text-center cursor-pointer">
         <input type="file" id="fileInput" accept="image/*" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-hidden="true">
         <i class="fas fa-cloud-upload-alt text-3xl text-yellow-400 mb-3" aria-hidden="true"></i>
         <p class="text-yellow-200 font-semibold text-sm">Tap to upload, or drag photos here</p>
@@ -639,26 +799,26 @@
 
   <!-- Interactive RSVP & Blessings Section -->
   <section class="py-14 sm:py-20 px-4 max-w-3xl mx-auto text-center" data-aos="fade-up" aria-labelledby="rsvp-heading">
-    <div class="glass-card p-6 sm:p-8 md:p-12 rounded-3xl border border-yellow-500/30">
+    <div class="glass-card card-frame p-6 sm:p-8 md:p-12 rounded-3xl">
       <i class="fas fa-envelope-open-text text-4xl text-yellow-400 mb-4" aria-hidden="true"></i>
       <h2 id="rsvp-heading" class="text-3xl font-serif-title gold-gradient-text mb-2">Send Your Blessings</h2>
       <p class="font-malayalam text-gray-300 text-sm mb-6">ഈ മംഗളമുഹൂർത്തം ധന്യമാക്കാൻ താങ്കളെ കുടുംബസമേതം ക്ഷണിച്ചുകൊള്ളുന്നു.</p>
 
       <form id="rsvpForm" class="space-y-4 max-w-md mx-auto">
         <label for="guestName" class="sr-only">Your name</label>
-        <input type="text" id="guestName" name="guestName" placeholder="Your Name" required class="w-full px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400">
+        <input type="text" id="guestName" name="guestName" placeholder="Your Name" required class="glass-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none transition-colors">
 
         <label for="guestMessage" class="sr-only">Your wishes / blessings</label>
-        <textarea id="guestMessage" name="guestMessage" rows="3" placeholder="Write your wishes/blessings..." class="w-full px-4 py-3 rounded-xl bg-black/50 border border-yellow-500/30 text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400"></textarea>
+        <textarea id="guestMessage" name="guestMessage" rows="3" placeholder="Write your wishes/blessings..." class="glass-input w-full px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none transition-colors"></textarea>
 
-        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-base hover:opacity-90 transition shadow-xl flex items-center justify-center gap-2">
+        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black font-bold text-base hover:opacity-90 transition shadow-xl flex items-center justify-center gap-2 ring-1 ring-purple-200/30">
           <span>Send Wishes via WhatsApp</span> <i class="fab fa-whatsapp text-xl" aria-hidden="true"></i>
         </button>
       </form>
 
       <!-- Contact Info -->
       <div class="mt-10 pt-6 border-t border-yellow-500/20">
-        <p class="text-xs text-gray-400 uppercase tracking-widest mb-3">Contact For Enquiries</p>
+        <p class="text-xs eyebrow uppercase mb-3">Contact For Enquiries</p>
         <div class="flex flex-wrap justify-center gap-4 text-sm font-semibold text-yellow-300">
           <a href="tel:+919061150956" class="hover:underline flex items-center gap-1"><i class="fas fa-phone-alt" aria-hidden="true"></i> 90611 50956</a>
           <span aria-hidden="true">•</span>
@@ -759,7 +919,7 @@
         spread: 90,
         startVelocity: 45,
         origin: { y: 0.6 },
-        colors: ['#D4AF37', '#FFE5A3', '#8A1424', '#F8F5F0']
+        colors: ['#D4AF37', '#FFE5A3', '#B7A3E0', '#F8F5F0']
       });
     }
 
@@ -800,6 +960,41 @@
     // lock background scrolling for as long as the entrance screen is up.
     window.scrollTo(0, 0);
     if (welcomeModal) document.documentElement.classList.add('no-scroll');
+
+    // ---------------------------------------------------------------
+    // Preloader: keep the spinner up until the entrance photo + fonts
+    // are actually ready, then reveal the invitation in one smooth
+    // fade instead of letting it pop in half-loaded.
+    // ---------------------------------------------------------------
+    (function () {
+      const pageLoader = document.getElementById('pageLoader');
+      if (!pageLoader) return;
+
+      const MIN_VISIBLE_MS = 900;   // avoid an instant flash on fast connections
+      const MAX_WAIT_MS = 4000;     // never block the invitation on a slow/broken asset
+      const shownAt = Date.now();
+
+      const entranceImg = new Image();
+      const imageReady = new Promise((resolve) => {
+        entranceImg.onload = resolve;
+        entranceImg.onerror = resolve; // don't get stuck if the photo fails to load
+        entranceImg.src = 'assets/images/entrance-bg.jpg';
+      });
+
+      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready.catch(() => {}) : Promise.resolve();
+      const timeoutFallback = new Promise((resolve) => setTimeout(resolve, MAX_WAIT_MS));
+
+      Promise.race([Promise.all([imageReady, fontsReady]), timeoutFallback]).then(() => {
+        const elapsed = Date.now() - shownAt;
+        const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
+        setTimeout(() => {
+          pageLoader.style.opacity = '0';
+          pageLoader.setAttribute('aria-hidden', 'true');
+          if (welcomeModal) welcomeModal.style.opacity = '1';
+          setTimeout(() => { pageLoader.style.display = 'none'; }, 550);
+        }, remaining);
+      });
+    })();
 
     function setPlayingUI(playing) {
       isPlaying = playing;
