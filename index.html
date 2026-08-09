@@ -553,7 +553,7 @@
             </div>
           </div>
 
-          <a href="https://www.google.com/maps/search/?api=1&query=Kavilakkad+Kerala" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
+          <a href="https://maps.app.goo.gl/hzCoxwtsBEx5LMYR8?g_st=awb" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-yellow-600 to-amber-500 text-black font-bold text-sm hover:scale-105 transition shadow-lg text-center flex items-center justify-center gap-2">
             <i class="fas fa-location-arrow" aria-hidden="true"></i> Open Directions in Google Maps
           </a>
         </div>
@@ -605,8 +605,8 @@
       </div>
       <div id="galleryGrid" class="gallery-masonry"></div>
       <div class="text-center mt-8">
-        <button id="loadMoreBtn" type="button" class="hidden px-6 py-3 rounded-xl glass-card border border-yellow-500/40 text-yellow-300 text-sm font-semibold hover:border-yellow-400 transition">
-          Load More Moments
+        <button id="loadMoreBtn" type="button" class="hidden px-6 py-3 rounded-xl glass-card border border-yellow-500/40 text-yellow-300 text-sm font-semibold hover:border-yellow-400 transition items-center gap-2 mx-auto">
+          <span id="loadMoreBtnLabel">View More Photos</span> <i class="fas fa-chevron-down text-xs" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -1001,6 +1001,11 @@
       let lastVisible = null;
       let allItems = [];      // { id, imageUrl, uploaderName, createdAt }
       let lightboxIndex = -1;
+      let serverHasMore = false;
+
+      const INITIAL_DISPLAY = 8;   // photos shown before "View More" is needed
+      const DISPLAY_STEP = 12;     // photos revealed per click
+      let displayLimit = INITIAL_DISPLAY;
 
       // ---- Live first page: new uploads from anyone appear instantly ----
       const liveQuery = query(galleryCol, orderBy('createdAt', 'desc'), limit(PAGE_SIZE));
@@ -1008,6 +1013,7 @@
         galleryLoading.classList.add('hidden');
         const items = snap.docs.map(docToItem);
         if (items.length) lastVisible = snap.docs[snap.docs.length - 1];
+        serverHasMore = snap.docs.length >= PAGE_SIZE;
 
         // Merge live first page with any already-loaded older pages
         const olderItems = allItems.filter(i => !items.find(n => n.id === i.id) && isOlderThan(i, items));
@@ -1015,7 +1021,7 @@
         renderGrid();
 
         galleryEmpty.classList.toggle('hidden', allItems.length !== 0);
-        loadMoreBtn.classList.toggle('hidden', snap.docs.length < PAGE_SIZE);
+        updateLoadMoreButton();
       }, (err) => {
         console.warn('Gallery failed to load — check Firestore rules / config.', err);
         galleryLoading.classList.add('hidden');
@@ -1041,21 +1047,40 @@
         };
       }
 
+      // Shows/hides the "View More" button and sets its label depending on
+      // whether there are already-loaded photos to reveal, more to fetch
+      // from the server, or neither.
+      function updateLoadMoreButton() {
+        const hiddenLocally = displayLimit < allItems.length;
+        const canFetchMore = serverHasMore && !hiddenLocally;
+        loadMoreBtn.classList.toggle('hidden', !hiddenLocally && !canFetchMore);
+        document.getElementById('loadMoreBtnLabel').textContent = canFetchMore ? 'Load More Photos' : 'View More Photos';
+      }
+
       loadMoreBtn.addEventListener('click', async () => {
+        // First reveal photos already loaded in the browser — instant, no network.
+        if (displayLimit < allItems.length) {
+          displayLimit += DISPLAY_STEP;
+          renderGrid();
+          updateLoadMoreButton();
+          return;
+        }
+        // Nothing left loaded locally — fetch the next page from Firestore.
         if (!lastVisible) return;
         loadMoreBtn.disabled = true;
-        loadMoreBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
+        loadMoreBtn.querySelector('#loadMoreBtnLabel').textContent = 'Loading…';
         try {
           const moreQuery = query(galleryCol, orderBy('createdAt', 'desc'), startAfter(lastVisible), limit(PAGE_SIZE));
           const snap = await getDocs(moreQuery);
           const items = snap.docs.map(docToItem);
           if (snap.docs.length) lastVisible = snap.docs[snap.docs.length - 1];
+          serverHasMore = snap.docs.length >= PAGE_SIZE;
           allItems = dedupe([...allItems, ...items]);
+          displayLimit += DISPLAY_STEP;
           renderGrid();
-          loadMoreBtn.classList.toggle('hidden', snap.docs.length < PAGE_SIZE);
         } finally {
           loadMoreBtn.disabled = false;
-          loadMoreBtn.textContent = 'Load More Moments';
+          updateLoadMoreButton();
         }
       });
 
@@ -1067,7 +1092,7 @@
 
       function renderGrid() {
         galleryGrid.innerHTML = '';
-        allItems.forEach((item, idx) => {
+        allItems.slice(0, displayLimit).forEach((item, idx) => {
           const fig = document.createElement('figure');
           fig.className = 'gallery-item';
           fig.style.animationDelay = `${Math.min(idx, 12) * 0.04}s`;
